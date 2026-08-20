@@ -1,0 +1,48 @@
+# ==========================================
+# Terraform
+# ==========================================
+
+# Terraform working directory
+.terraform/
+
+# Terraform state files
+*.tfstate
+*.tfstate.*
+
+# Terraform variable files
+# These may contain environment-specific or sensitive values
+*.tfvars
+*.tfvars.json
+
+# Terraform plan files
+*.tfplan
+tfplan
+
+# Terraform crash logs
+crash.log
+crash.*.log
+
+# Terraform override files
+override.tf
+override.tf.json
+*_override.tf
+*_override.tf.json
+
+# ==========================================
+# Secrets / Environment
+# ==========================================
+
+.env
+.env.*
+
+# SSH private keys
+*.pem
+*.key
+
+# ==========================================
+# Local editor / OS files
+# ==========================================
+
+.vscode/
+.DS_Store
+Thumbs.db
