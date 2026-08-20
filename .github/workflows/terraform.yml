@@ -31,9 +31,26 @@ jobs:
         run: terraform fmt -check -recursive
 
       - name: Inspect GitHub OIDC claims
-        uses: github/actions-oidc-debugger@main
-        with:
-          audience: sts.amazonaws.com
+        shell: bash
+        env:
+          AUDIENCE: sts.amazonaws.com
+        run: |
+          TOKEN_JSON=$(curl -s \
+            -H "Authorization: bearer $ACTIONS_ID_TOKEN_REQUEST_TOKEN" \
+            "${ACTIONS_ID_TOKEN_REQUEST_URL}&audience=${AUDIENCE}")
+
+          ID_TOKEN=$(echo "$TOKEN_JSON" | jq -r '.value')
+
+          PAYLOAD=$(echo "$ID_TOKEN" | cut -d '.' -f2)
+          PAYLOAD="${PAYLOAD//-/+}"
+          PAYLOAD="${PAYLOAD//_/\/}"
+
+          case $((${#PAYLOAD} % 4)) in
+            2) PAYLOAD="${PAYLOAD}==" ;;
+            3) PAYLOAD="${PAYLOAD}=" ;;
+          esac
+
+          echo "$PAYLOAD" | base64 -d | jq
 
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v4
